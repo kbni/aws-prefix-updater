@@ -1,0 +1,17 @@
+
+# AWS configuration for the `aws` utility
+export AWS_ACCESS_KEY_ID="AKIAOMGAWSIAWESOME"
+export AWS_SECRET_ACCESS_KEY="KJAHSDASDAS+NotARealKey"
+export AWS_DEFAULT_REGION="ap-southeast-2"
+
+# AWS prefix list ID that we will update
+awsPrefixListId="pl-08606a4d989b02cf7"
+
+# destination to send file to (passed to `scp` as an argument)
+htaccessDest="your-server:/home/yourcpanelacct/public_html/wp-admin/.htaccess"
+
+# CIDR ranges and hostnames to update htaccess & prefix-list with
+lookupHosts+=("somehost.ddns.net") # some dynamic dns host provided by a vendor
+cidrs+=("193.232.222.243/32") # static IP address
+cidrs+=("40.111.69.23/32") # some other IP address
+
