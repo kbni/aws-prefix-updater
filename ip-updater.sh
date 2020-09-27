@@ -8,7 +8,7 @@ if [[ "$1" = "cron" ]]; then
 fi
 
 #
-# ip-updater.sh - script for updating security controls at eNurse:
+# ip-updater.sh - script for updating security controls for web servers:
 #  - AWS prefix list associated with a security group rule that updates
 #  - htaccess which locks down access to /wp-admin
 #
