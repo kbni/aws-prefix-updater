@@ -114,6 +114,11 @@ echo "[debug] Building htaccess: ${SCRIPT_DIR}/last_htaccess"
     echo "Allow from 69.46.36.0/27" # wordfence
     echo "Allow from 69.46.36.31"   # wordfence
     echo "Allow from 69.46.36.32"   # wordfence
+    echo "<Files admin-ajax.php>"
+    echo "Order allow,deny"
+    echo "Allow from all"
+    echo "Satisfy any"
+    echo "</Files>"
     for cidr in ${cidrs[@]}; do
         echo "Allow from $cidr";
     done
