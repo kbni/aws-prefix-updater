@@ -19,6 +19,7 @@ fi
 # Script configuration should populate these values
 
 #set -e            # fail on error
+htaccessDests=()   # list of htaccess files to overwrite
 lookupHosts=()    # establish empty array for hosts to lookup
 cidrs=()          # establish empty array for raw cidr entries
 bail=0            # we'll bail if this equals 1
@@ -42,9 +43,9 @@ if [[ "$awsPrefixListId" = "" ]]; then
     bail=1
     echo "[error] it seems that \$awsPrefixListId is not set"
 fi
-if [[ "$htaccessDest" = "" ]]; then
+if [[ "$htaccessDests" = "" ]]; then
     bail=1
-    echo "[error] it seems that \$htaccessDest is not set"
+    echo "[error] it seems that \$htaccessDests is not set"
 fi
 if [ $bail -eq 1 ]; then
     echo "[fatal] one or more checks failed, please fix and try again"
@@ -125,11 +126,13 @@ echo "[debug] Building htaccess: ${SCRIPT_DIR}/last_htaccess"
 ) > "${SCRIPT_DIR}/last_htaccess"
 
 # copy our htaccess file to htaccessDest
-if scp -qB "${SCRIPT_DIR}/last_htaccess" "$htaccessDest"; then
-    echo "[info] uploaded htaccess to ${htaccessDest}"
-else
-    echo "[error] unable to upload htaccess" > /dev/stderr
-    bail=1
-fi
+for htaccessDest in ${htaccessDests[@]}; do
+	if scp -qB "${SCRIPT_DIR}/last_htaccess" "$htaccessDest"; then
+	    echo "[info] uploaded htaccess to ${htaccessDest}"
+	else
+	    echo "[error] unable to upload htaccess" > /dev/stderr
+	    bail=1
+	fi
+done
 
 exit $bail
