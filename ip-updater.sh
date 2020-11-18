@@ -115,14 +115,15 @@ echo "[debug] Building htaccess: ${SCRIPT_DIR}/last_htaccess"
     echo "Allow from 69.46.36.0/27" # wordfence
     echo "Allow from 69.46.36.31"   # wordfence
     echo "Allow from 69.46.36.32"   # wordfence
+    for cidr in ${cidrs[@]}; do
+        echo "Allow from $cidr";
+    done
     echo "<Files admin-ajax.php>"
     echo "Order allow,deny"
     echo "Allow from all"
     echo "Satisfy any"
     echo "</Files>"
-    for cidr in ${cidrs[@]}; do
-        echo "Allow from $cidr";
-    done
+    echo "ErrorDocument 403 \"Access to this resource is restricted!\""
 ) > "${SCRIPT_DIR}/last_htaccess"
 
 # copy our htaccess file to htaccessDest
