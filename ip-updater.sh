@@ -53,15 +53,13 @@ if [ $bail -eq 1 ]; then
 fi
 
 # Resolve $lookupHosts and populate $cidrs
-
 for hn in ${lookupHosts[@]}; do
-    ip_addr=$(nslookup "$hn" | awk '/^Address: / { print $2 ; exit }')
-    if [[ $ip_addr = "" ]]; then
-        echo "[debug] Unable to resolve: ${hn} (ignored)"
-        continue
-    fi
-    echo "[debug] Resolved ${hn} to ${ip_addr}"
-    cidrs+=("${ip_addr}/32")
+    while read ip_addr; do
+        if [[ ! "$ip_addr" = "" ]]; then
+            echo "[debug] Resolved ${hn} to ${ip_addr}"
+            cidrs+=("${ip_addr}/32")
+        fi
+    done <<< $(nslookup "$hn" | awk '/^Address: / { print $2 }')
 done
 
 # Update the AWS prefix list
@@ -112,9 +110,9 @@ echo "[debug] Building htaccess: ${SCRIPT_DIR}/last_htaccess"
     echo "Order deny,allow"
     echo "Deny from all"
     echo "Allow from 127.0.0.1"
-    echo "Allow from 69.46.36.0/27" # wordfence
-    echo "Allow from 69.46.36.31"   # wordfence
-    echo "Allow from 69.46.36.32"   # wordfence
+    echo "Allow from 69.46.36.0/27"    # wordfence
+    echo "Allow from 69.46.36.31/32"   # wordfence
+    echo "Allow from 69.46.36.32/32"   # wordfence
     for cidr in ${cidrs[@]}; do
         echo "Allow from $cidr";
     done
@@ -137,3 +135,4 @@ for htaccessDest in ${htaccessDests[@]}; do
 done
 
 exit $bail
+
